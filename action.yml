@@ -1,5 +1,9 @@
 name: 'Verify Pull Request Labels'
+author: 'Jesus Vasquez'
 description: 'Verify that the PR has a valid label'
+branding:
+  icon: 'check'
+  color: 'gray-dark'
 inputs:
   github-token:
     description: 'The GitHub token'
