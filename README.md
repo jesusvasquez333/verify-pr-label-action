@@ -12,18 +12,18 @@ Instead, consider the same example, the action is triggered by `pull_request`'s 
 
 ## Inputs
 
-### `github-token`:
+### `github-token`
 
 **Required** The GitHub token.
 
-### `valid-labels`:
+### `valid-labels`
 
 **Required** A list of valid labels. It must be a quoted string, with label separated by colons. For example: `'bug, enhancement'`
 
 ## Example usage
 
 In your workflow YAML file add this step:
-```
+```yaml
 uses: actions/verify-pr-label-action@v1.0.0
 with:
     github-token: '${{ secrets.GITHUB_TOKEN }}'
@@ -31,7 +31,7 @@ with:
 ```
 
 and trigger it with:
-```
+```yaml
 on:
   pull_request:
    types: [opened, labeled, unlabeled, synchronize]

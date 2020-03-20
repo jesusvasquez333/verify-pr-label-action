@@ -7,6 +7,7 @@ from github import Github
 
 def get_env_var(env_var_name, echo_value=False):
     """Try to get the value from a environmental variable.
+
     If the values is 'None', then a ValueError exception will
     be thrown.
 
