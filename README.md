@@ -1,5 +1,7 @@
 # Verify Pull Request Label Action
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/162d73a2aff6478081cdc34ee9ee7b6e)](https://app.codacy.com/manual/jesusvasquez333/verify-pr-label-action?utm_source=github.com&utm_medium=referral&utm_content=jesusvasquez333/verify-pr-label-action&utm_campaign=Badge_Grade_Dashboard)
+
 This action will verify if a pull request has at least one label from a set of valid labels. The set of valid valid labels is defined by the user and passed as an input argument.
 
 If the pull request does not contain a label from the set of valid labels, then the action will create a pull request review using the event `REQUEST_CHANGES`. On the other hand, if a valid label is present in the pull request, the action will create a pull request review using the event `APPROVE` instead. In both of these cases the exit code will be `0`, and the GitHub check will success.
