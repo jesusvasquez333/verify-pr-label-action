@@ -18,4 +18,4 @@ jobs:
       before_script:
         - npm install github-release-notes -g
       script:
-        - gren release
+        - gren release --override
