@@ -12,11 +12,11 @@ Instead, consider the same example, the action is triggered by `pull_request`'s 
 
 ## Inputs
 
-### `github-token`:
+### `github-token`
 
 **Required** The GitHub token.
 
-### `valid-labels`:
+### `valid-labels`
 
 **Required** A list of valid labels. It must be a quoted string, with label separated by colons. For example: `'bug, enhancement'`
 
