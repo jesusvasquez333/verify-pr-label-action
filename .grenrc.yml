@@ -1,0 +1,12 @@
+---
+  dataSource: "prs"
+  onlyMilestones: false
+  # Group the release notes in tow categories,
+  # based on the PR labels 'bug' and 'enhancement'
+  groupBy:
+    "Bug fixes:":
+    - "bug"
+    "Enhancements:":
+    - "enhancement"
+  template:
+    "issue": "- {{url}} {{name}}"
