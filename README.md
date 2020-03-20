@@ -23,7 +23,7 @@ Instead, consider the same example, the action is triggered by `pull_request`'s 
 ## Example usage
 
 In your workflow YAML file add this step:
-```
+```yaml
 uses: actions/verify-pr-label-action@v1.0.0
 with:
     github-token: '${{ secrets.GITHUB_TOKEN }}'
@@ -31,7 +31,7 @@ with:
 ```
 
 and trigger it with:
-```
+```yaml
 on:
   pull_request:
    types: [opened, labeled, unlabeled, synchronize]
