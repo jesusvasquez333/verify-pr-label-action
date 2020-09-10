@@ -82,13 +82,13 @@ for label in pr_labels:
 if len(pr_valid_labels):
     # If there were valid labels, then create a pull request request review, approving it
     print(f'Success! This pull request contains the following valid labels: {pr_valid_labels}')
-    if post_review
+    if post_review:
         pr.create_review(body = 'This pull request contains a valid label.',
                      event = 'APPROVE')
 else:
     # If there were not valid labels, then create a pull request review, requesting changes
     print(f'Error! This pull request does not contain any of the valid labels: {valid_labels}')
-    if post_review
+    if post_review:
         pr.create_review(body = 'This pull request does not contain a valid label. '
                             f'Please add one of the following labels: `{valid_labels}`',
                      event = 'REQUEST_CHANGES')
