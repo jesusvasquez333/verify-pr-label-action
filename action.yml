@@ -11,9 +11,14 @@ inputs:
   valid-labels:
     description: 'List of valid labels'
     required: true
+  post-review:
+    description: 'Post review after check'
+    required: false
+    default: false
 runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
     - ${{ inputs.github-token }}
     - ${{ inputs.valid-labels }}
+    - ${{ inputs.post-review }}

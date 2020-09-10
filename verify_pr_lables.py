@@ -29,7 +29,7 @@ def get_env_var(env_var_name, echo_value=False):
     return value
 
 # Check if the number of input arguments is correct
-if len(sys.argv) != 3:
+if len(sys.argv) != 4:
     raise ValueError('Invalid number of arguments!')
 
 # Get the GitHub token
@@ -37,6 +37,9 @@ token=sys.argv[1]
 
 # Get the list of valid labels
 valid_labels=sys.argv[2]
+
+# Post Review
+post_review=sys.argv[3]
 print(f'Valid labels are: {valid_labels}')
 
 # Get needed values from the environmental variables
@@ -79,11 +82,13 @@ for label in pr_labels:
 if len(pr_valid_labels):
     # If there were valid labels, then create a pull request request review, approving it
     print(f'Success! This pull request contains the following valid labels: {pr_valid_labels}')
-    pr.create_review(body = 'This pull request contains a valid label.',
+    if post_review
+        pr.create_review(body = 'This pull request contains a valid label.',
                      event = 'APPROVE')
 else:
     # If there were not valid labels, then create a pull request review, requesting changes
     print(f'Error! This pull request does not contain any of the valid labels: {valid_labels}')
-    pr.create_review(body = 'This pull request does not contain a valid label. '
+    if post_review
+        pr.create_review(body = 'This pull request does not contain a valid label. '
                             f'Please add one of the following labels: `{valid_labels}`',
                      event = 'REQUEST_CHANGES')

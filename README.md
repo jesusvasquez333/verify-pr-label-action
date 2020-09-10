@@ -22,6 +22,12 @@ Instead, consider the same example, the action is triggered by `pull_request`'s 
 
 **Required** A list of valid labels. It must be a quoted string, with label separated by colons. For example: `'bug, enhancement'`
 
+
+### `post-review`
+
+**Non-Required** Post approve review after checking valid labels
+
+
 ## Example usage
 
 In your workflow YAML file add this step:
@@ -31,6 +37,16 @@ with:
     github-token: '${{ secrets.GITHUB_TOKEN }}'
     valid-labels: 'bug, enhancement'
 ```
+
+or with approve review:
+```yaml
+uses: actions/verify-pr-label-action@v1.0.0
+with:
+    github-token: '${{ secrets.GITHUB_TOKEN }}'
+    valid-labels: 'bug, enhancement'
+    post-review: true
+```
+
 
 and trigger it with:
 ```yaml
