@@ -3,7 +3,7 @@ author: 'Aios Dave'
 description: 'Verify that the PR has a valid label'
 branding:
   icon: 'check'
-  color: 'green-dark'
+  color: 'red'
 inputs:
   github-token:
     description: 'The GitHub token'
