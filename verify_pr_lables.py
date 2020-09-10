@@ -29,7 +29,7 @@ def get_env_var(env_var_name, echo_value=False):
     return value
 
 # Check if the number of input arguments is correct
-if len(sys.argv) in [ 3, 4 ]:
+if len(sys.argv) != 3 and len(sys.argv) != 4:
     raise ValueError('Invalid number of arguments!')
 
 # Get the GitHub token
