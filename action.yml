@@ -1,9 +1,9 @@
-name: 'Verify Pull Request Labels'
-author: 'Jesus Vasquez'
+name: 'Verify PR Labels'
+author: 'Aios Dave'
 description: 'Verify that the PR has a valid label'
 branding:
   icon: 'check'
-  color: 'gray-dark'
+  color: 'green-dark'
 inputs:
   github-token:
     description: 'The GitHub token'
@@ -17,7 +17,7 @@ inputs:
     default: false
 runs:
   using: 'docker'
-  image: 'Dockerfile'
+  image: 'docker://theparticles/verify-pr-label-action'
   args:
     - ${{ inputs.github-token }}
     - ${{ inputs.valid-labels }}
