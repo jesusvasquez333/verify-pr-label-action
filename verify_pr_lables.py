@@ -59,6 +59,9 @@ pr = repo.get_pull(pr_number)
 # Get the pull request labels
 pr_labels = pr.get_labels()
 
+# Get the list of reviews
+pr_reviews = pr.get_reviews()
+
 # This is a list of valid label found in the pull request
 pr_valid_labels = []
 
@@ -67,6 +70,27 @@ pr_valid_labels = []
 for label in pr_labels:
     if label.name in valid_labels:
         pr_valid_labels.append(label.name)
+
+# Look for the last review done by this module. The variable
+# 'was_approved' will be set to True/False if the last review
+# done was approved/requested changes; if there was not a
+# previous review the variable will be set to 'None'.
+was_approved = None
+for review in pr_reviews.reversed:
+    # Reviews done by this modules uses a login name
+    # 'github-actions[bot]'
+    if review.user.login == 'github-actions[bot]':
+        if review.state == 'APPROVED':
+            # The last review was approved
+            was_approved = True
+        elif review.state == 'CHANGES_REQUESTED':
+            # The last review requested changes
+            was_approved = False
+
+        # Break this loop after the last review is found.
+        # If no review was done, 'was_approved' will remain
+        # as 'None'.
+        break
 
 # Check if there were at least one valid label
 # Note: In both cases we exit without an error code and let the check to succeed. This is because GitHub
