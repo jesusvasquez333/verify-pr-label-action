@@ -28,7 +28,7 @@ When this action runs, it will look for the previous review done by this action.
 
 In your workflow YAML file add this step:
 ```yaml
-uses: jesusvasquez333/verify-pr-label-action@v1.1.0
+uses: jesusvasquez333/verify-pr-label-action@v1.2.0
 with:
     github-token: '${{ secrets.GITHUB_TOKEN }}'
     valid-labels: 'bug, enhancement'
