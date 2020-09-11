@@ -80,7 +80,6 @@ for review in pr_reviews.reversed:
     # Reviews done by this modules uses a login name
     # 'github-actions[bot]'
     if review.user.login == 'github-actions[bot]':
-        print(f'Last review found, its state is {review.state}')
         if review.state == 'APPROVED':
             # The last review was approved
             was_approved = True
