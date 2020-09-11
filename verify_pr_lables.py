@@ -100,6 +100,7 @@ for review in pr_reviews.reversed:
 # This will prevent merging the pull request until a valid label is added, which will trigger this check again
 # and will create a new pull request review, but in this case marked as 'APPROVE'
 
+
 if len(pr_valid_labels):
     # If there were valid labels, create a pull request review, approving it
     print(f'Success! This pull request contains the following valid labels: {pr_valid_labels}')
