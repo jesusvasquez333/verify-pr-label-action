@@ -42,6 +42,8 @@ print(f'Valid labels are: {valid_labels}')
 # Get needed values from the environmental variables
 repo_name=get_env_var('GITHUB_REPOSITORY')
 github_ref=get_env_var('GITHUB_REF')
+print(f'GITHUB_REPOSITORY = {repo_name}')
+print(f'GITHUB_REF        = {github_ref}')
 
 # Create a repository object, using the GitHub token
 repo = Github(token).get_repo(repo_name)
