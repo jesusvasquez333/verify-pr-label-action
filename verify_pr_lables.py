@@ -67,7 +67,7 @@ if github_event_name == 'pull_request_target':
         pr_number=int(pr_number_str)
     except ValueError:
         print(f'A valid pull request number input must be defined when triggering on ' \
-            '"pull_request_target".')
+            '"pull_request_target". The pull request number passed was {pr_number_str}.')
         raise
 else:
     # Try to extract the pull request number from the GitHub reference.
