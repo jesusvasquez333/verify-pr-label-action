@@ -17,3 +17,4 @@ runs:
   args:
     - ${{ inputs.github-token }}
     - ${{ inputs.valid-labels }}
+    - ${{ github.event.pull_request.number }}

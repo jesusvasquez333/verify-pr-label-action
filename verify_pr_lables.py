@@ -34,7 +34,7 @@ for k,v in os.environ.items():
 print('===========')
 
 # Check if the number of input arguments is correct
-if len(sys.argv) != 3:
+if len(sys.argv) != 4:
     raise ValueError('Invalid number of arguments!')
 
 # Get the GitHub token
@@ -43,6 +43,10 @@ token=sys.argv[1]
 # Get the list of valid labels
 valid_labels=sys.argv[2]
 print(f'Valid labels are: {valid_labels}')
+
+# Get the PR number
+prn=sys.argv[3]
+print(f'Pull request number: {prn}')
 
 # Get needed values from the environmental variables
 repo_name=get_env_var('GITHUB_REPOSITORY')
