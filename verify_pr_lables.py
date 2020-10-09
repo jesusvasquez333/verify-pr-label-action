@@ -45,24 +45,38 @@ valid_labels=sys.argv[2]
 print(f'Valid labels are: {valid_labels}')
 
 # Get the PR number
-prn=sys.argv[3]
-print(f'Pull request number: {prn}')
+pr_number_str=sys.argv[3]
 
 # Get needed values from the environmental variables
 repo_name=get_env_var('GITHUB_REPOSITORY')
 github_ref=get_env_var('GITHUB_REF')
+github_event_name=get_env_var('GITHUB_EVENT_NAME')
 print(f'GITHUB_REPOSITORY = {repo_name}')
 print(f'GITHUB_REF        = {github_ref}')
+print(f'GITHUB_EVENT_NAME = {github_event_name}')
 
 # Create a repository object, using the GitHub token
 repo = Github(token).get_repo(repo_name)
 
-# Try to extract the pull request number from the GitHub reference.
-try:
-    pr_number=int(re.search('refs/pull/([0-9]+)/merge', github_ref).group(1))
-    print(f'Pull request number: {pr_number}')
-except AttributeError:
-    raise ValueError(f'The Pull request number could not be extracted from the GITHUB_REF = {github_ref}')
+# When this actions runs on a "pull_reques_target" event, the pull request number is not
+# available in the environmental variables; in that case it must be defined as an input
+# value. Otherwise, we will extract it from the 'GITHUB_REF' variable.
+if github_event_name == 'pull_request_target':
+    # Verify the passed pull request number
+    try:
+        pr_number=int(pr_number_str)
+    except ValueError:
+        raise ValueError(f'A valid pull request number input must be defined when triggering on \
+            "pull_request_target". The pull request number passed was {pr_number_str}.')
+else:
+    # Try to extract the pull request number from the GitHub reference.
+    try:
+        pr_number=int(re.search('refs/pull/([0-9]+)/merge', github_ref).group(1))
+    except AttributeError:
+        raise ValueError(f'The pull request number could not be extracted from the GITHUB_REF = \
+            {github_ref}')
+
+print(f'Pull request number: {pr_number}')
 
 # Create a pull request object
 pr = repo.get_pull(pr_number)
