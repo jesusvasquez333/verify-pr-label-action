@@ -28,6 +28,11 @@ def get_env_var(env_var_name, echo_value=False):
 
     return value
 
+print('====ENV====')
+for k,v in os.environ.items():
+    print(f'{k} = {v}')
+print('===========')
+
 # Check if the number of input arguments is correct
 if len(sys.argv) != 3:
     raise ValueError('Invalid number of arguments!')
