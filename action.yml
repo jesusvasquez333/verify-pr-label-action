@@ -11,9 +11,13 @@ inputs:
   valid-labels:
     description: 'List of valid labels'
     required: true
+  pull-request-number:
+    description: 'The Pull Request number'
+    required: false
 runs:
   using: 'docker'
   image: 'Dockerfile'
   args:
     - ${{ inputs.github-token }}
     - ${{ inputs.valid-labels }}
+    - ${{ inputs.pull-request-number }}

@@ -29,7 +29,7 @@ def get_env_var(env_var_name, echo_value=False):
     return value
 
 # Check if the number of input arguments is correct
-if len(sys.argv) != 3:
+if len(sys.argv) != 4:
     raise ValueError('Invalid number of arguments!')
 
 # Get the GitHub token
@@ -39,22 +39,47 @@ token=sys.argv[1]
 valid_labels=sys.argv[2]
 print(f'Valid labels are: {valid_labels}')
 
+# Get the PR number
+pr_number_str=sys.argv[3]
+
 # Get needed values from the environmental variables
 repo_name=get_env_var('GITHUB_REPOSITORY')
 github_ref=get_env_var('GITHUB_REF')
+github_event_name=get_env_var('GITHUB_EVENT_NAME')
 
 # Create a repository object, using the GitHub token
 repo = Github(token).get_repo(repo_name)
 
-# Try to extract the pull request number from the GitHub reference.
-try:
-    pr_number=int(re.search('refs/pull/([0-9]+)/merge', github_ref).group(1))
-    print(f'Pull request number: {pr_number}')
-except AttributeError:
-    raise ValueError(f'The Pull request number could not be extracted from the GITHUB_REF = {github_ref}')
+# When this actions runs on a "pull_reques_target" event, the pull request number is not
+# available in the environmental variables; in that case it must be defined as an input
+# value. Otherwise, we will extract it from the 'GITHUB_REF' variable.
+if github_event_name == 'pull_request_target':
+    # Verify the passed pull request number
+    try:
+        pr_number=int(pr_number_str)
+    except ValueError:
+        print(f'A valid pull request number input must be defined when triggering on ' \
+            f'"pull_request_target". The pull request number passed was "{pr_number_str}".')
+        raise
+else:
+    # Try to extract the pull request number from the GitHub reference.
+    try:
+        pr_number=int(re.search('refs/pull/([0-9]+)/merge', github_ref).group(1))
+    except AttributeError:
+        print(f'The pull request number could not be extracted from the GITHUB_REF = ' \
+            f'"{github_ref}"')
+        raise
+
+print(f'Pull request number: {pr_number}')
 
 # Create a pull request object
 pr = repo.get_pull(pr_number)
+
+# Check if the PR comes from a fork. If so, the trigger must be 'pull_request_target'.
+# Otherwise raise an exception here.
+if pr.head.repo.full_name != pr.base.repo.full_name:
+    if github_event_name != 'pull_request_target':
+        raise Exception(f'PRs from forks are only supported when trigger on "pull_request_target"')
 
 # Get the pull request labels
 pr_labels = pr.get_labels()
