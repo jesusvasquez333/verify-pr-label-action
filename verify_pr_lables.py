@@ -11,13 +11,17 @@ def get_env_var(env_var_name, echo_value=False):
     If the values is 'None', then a ValueError exception will
     be thrown.
 
-    Args:
-        env_var_name (string): The name of the environmental variable.
-        echo_value (bool): Print the resulting value
+    Args
+    ----
+        env_var_name : str
+            The name of the environmental variable.
+        echo_value : bool
+            Print the resulting value.
 
-    Returns:
-        string: the value from the environmental variable.
-
+    Returns
+    -------
+        value : str
+            The value from the environmental variable.
     """
     value=os.environ.get(env_var_name)
 
