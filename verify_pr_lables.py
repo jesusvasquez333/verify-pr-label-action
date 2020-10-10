@@ -79,7 +79,7 @@ pr = repo.get_pull(pr_number)
 # Otherwise raise an exception here.
 if pr.head.repo.full_name != pr.base.repo.full_name:
     if github_event_name != 'pull_request_target':
-        raise Exception(f'PRs from forks are only supported when trigger on "pull_request_target"')
+        raise Exception('PRs from forks are only supported when trigger on "pull_request_target"')
 
 # Get the pull request labels
 pr_labels = pr.get_labels()
@@ -133,7 +133,7 @@ if len(pr_valid_labels):
 
     # If the last review done was approved, then don't approved it again
     if was_approved == True:
-        print(f'The last review was already approved')
+        print('The last review was already approved')
     else:
         pr.create_review(event = 'APPROVE')
 else:
@@ -142,7 +142,7 @@ else:
 
     # If the last review done requested changes, then don't request changes again
     if was_approved == False:
-        print(f'The last review already requested changes')
+        print('The last review already requested changes')
     else:
         pr.create_review(body = 'This pull request does not contain a valid label. '
                                 f'Please add one of the following labels: `{valid_labels}`',
