@@ -132,7 +132,7 @@ for review in pr_reviews.reversed:
 # Note 2: We check for the status of the previous review done by this module. If a previous review exists, and
 # it state and the current state are the same, a new request won't be generated.
 
-if len(pr_valid_labels):
+if pr_valid_labels:
     # If there were valid labels, create a pull request review, approving it
     print(f'Success! This pull request contains the following valid labels: {pr_valid_labels}')
 
