@@ -28,11 +28,6 @@ def get_env_var(env_var_name, echo_value=False):
 
     return value
 
-print('====ENV====')
-for k,v in os.environ.items():
-    print(f'{k} = {v}')
-print('===========')
-
 # Check if the number of input arguments is correct
 if len(sys.argv) != 4:
     raise ValueError('Invalid number of arguments!')
@@ -51,9 +46,6 @@ pr_number_str=sys.argv[3]
 repo_name=get_env_var('GITHUB_REPOSITORY')
 github_ref=get_env_var('GITHUB_REF')
 github_event_name=get_env_var('GITHUB_EVENT_NAME')
-print(f'GITHUB_REPOSITORY = {repo_name}')
-print(f'GITHUB_REF        = {github_ref}')
-print(f'GITHUB_EVENT_NAME = {github_event_name}')
 
 # Create a repository object, using the GitHub token
 repo = Github(token).get_repo(repo_name)
