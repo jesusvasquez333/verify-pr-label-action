@@ -21,7 +21,7 @@ When this action runs, it will look for the previous review done by this action.
 
 When a pull request in opened from a forked repository, Github actions run with read-only permissions, and so the action won't be able to create a pull request review.
 
-Fortunately, Github recently added a new trigger event `pull_request_target` which behaves in an almost identical way to the `pull_request` event, but the action runs in the base of the pull request and will therefore have write permission. However, as the action runs in the base of the pull request, the pull request number is not available in the environmental variables, and must therefor passed as an input argument. Please refer to the example usage section for more details.
+Fortunately, Github recently added a new trigger event `pull_request_target` which behaves in an almost identical way to the `pull_request` event, but the action runs in the base of the pull request and will therefore have write permission. However, as the action runs in the base of the pull request, the pull request number is not available in the environmental variables, and must therefore be passed as an input argument. Please refer to the example usage section for more details.
 
 ## Inputs
 
@@ -35,13 +35,15 @@ Fortunately, Github recently added a new trigger event `pull_request_target` whi
 
 ### `pull-request-number`
 
-**Optional** The pull request number, available in the github context: `${{ github.event.pull_request.number }}`. This number is automatically extracted from the environmental variables when the action trigger on `pull_request`. However, when the trigger used is `pull_request_target`, then this number needs to be passed here.
+**Optional** The pull request number, available in the github context: `${{ github.event.pull_request.number }}`. This number is automatically extracted from the environmental variables when the action triggers on `pull_request`. However, when the trigger used is `pull_request_target`, then this input needs to be used.
 
 ## Example usage
 
-### Allowing PR from forks
+### If you want to allow PRs from forks
 
-In your workflow YAML file add this step:
+If you want to allow PRs from anywhere, including forks, then you can use this example. This instruction will work even if your not going to work with forks.
+
+In your workflow YAML file add these steps:
 ```yaml
 uses: jesusvasquez333/verify-pr-label-action@v1.2.0
 with:
@@ -57,11 +59,13 @@ on:
    types: [opened, labeled, unlabeled, synchronize]
 ```
 
-### Allowing PR only from the same repository
+### If you plan to only open PRs same repository
+
+If you plan to open PR only from the same repository, you can use this example, which requires one less input value. This however won't work if you open a PR from a fork.
 
 In your workflow YAML file add this step:
 ```yaml
-uses: jesusvasquez333/verify-pr-label-action@v1.2.0
+uses: jesusvasquez333/verify-pr-label-action@v1.3.0
 with:
     github-token: '${{ secrets.GITHUB_TOKEN }}'
     valid-labels: 'bug, enhancement'
