@@ -17,6 +17,7 @@ def get_env_var(env_var_name, echo_value=False):
 
     Returns:
         string: the value from the environmental variable.
+
     """
     value=os.environ.get(env_var_name)
 
