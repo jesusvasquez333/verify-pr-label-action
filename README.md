@@ -2,6 +2,9 @@
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/162d73a2aff6478081cdc34ee9ee7b6e)](https://app.codacy.com/manual/jesusvasquez333/verify-pr-label-action?utm_source=github.com&utm_medium=referral&utm_content=jesusvasquez333/verify-pr-label-action&utm_campaign=Badge_Grade_Dashboard)
 
+
+## Description
+
 This action will verify if a pull request has at least one label from a set of valid labels. The set of valid valid labels is defined by the user and passed as an input argument.
 
 If the pull request does not contain a label from the set of valid labels, then the action will create a pull request review using the event `REQUEST_CHANGES`. On the other hand, if a valid label is present in the pull request, the action will create a pull request review using the event `APPROVE` instead. In both of these cases the exit code will be `0`, and the GitHub check will success.
@@ -14,6 +17,12 @@ When this action runs, it will look for the previous review done by this action.
 
 **Note**: if you want to use the `Require pull request reviews before merging` to require reviews approval before merging pull request, then you need to increase the number of `Required approving reviewers` by one, as this check will do an approval when a valid label is present. So, for example, if you want at least one reviewer approval, the set this value to 2.
 
+## Note when working with forks
+
+When a pull request in opened from a forked repository, Github actions run with read-only permissions, and so the action won't be able to create a pull request review.
+
+Fortunately, Github recently added a new trigger event `pull_request_target` which behaves in an almost identical way to the `pull_request` event, but the action runs in the base of the pull request and will therefore have write permission. However, as the action runs in the base of the pull request, the pull request number is not available in the environmental variables, and must therefor passed as an input argument. Please refer to the example usage section for more details.
+
 ## Inputs
 
 ### `github-token`
@@ -24,7 +33,31 @@ When this action runs, it will look for the previous review done by this action.
 
 **Required** A list of valid labels. It must be a quoted string, with label separated by colons. For example: `'bug, enhancement'`
 
+### `pull-request-number`
+
+**Optional** The pull request number, available in the github context: `${{ github.event.pull_request.number }}`. This number is automatically extracted from the environmental variables when the action trigger on `pull_request`. However, when the trigger used is `pull_request_target`, then this number needs to be passed here.
+
 ## Example usage
+
+### Allowing PR from forks
+
+In your workflow YAML file add this step:
+```yaml
+uses: jesusvasquez333/verify-pr-label-action@v1.2.0
+with:
+    github-token: '${{ secrets.GITHUB_TOKEN }}'
+    valid-labels: 'bug, enhancement'
+    pull-request-number: '${{ github.event.pull_request.number }}'
+```
+
+and trigger it with:
+```yaml
+on:
+  pull_request_target:
+   types: [opened, labeled, unlabeled, synchronize]
+```
+
+### Allowing PR only from the same repository
 
 In your workflow YAML file add this step:
 ```yaml
