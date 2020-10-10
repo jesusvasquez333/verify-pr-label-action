@@ -25,7 +25,7 @@ def get_env_var(env_var_name, echo_value=False):
     """
     value=os.environ.get(env_var_name)
 
-    if value == None:
+    if value is None:
         raise ValueError(f'The environmental variable {env_var_name} is empty!')
 
     if echo_value:
@@ -137,7 +137,7 @@ if len(pr_valid_labels):
     print(f'Success! This pull request contains the following valid labels: {pr_valid_labels}')
 
     # If the last review done was approved, then don't approved it again
-    if was_approved == True:
+    if was_approved:
         print('The last review was already approved')
     else:
         pr.create_review(event = 'APPROVE')
@@ -146,7 +146,7 @@ else:
     print(f'Error! This pull request does not contain any of the valid labels: {valid_labels}')
 
     # If the last review done requested changes, then don't request changes again
-    if was_approved == False:
+    if not was_approved:
         print('The last review already requested changes')
     else:
         pr.create_review(body = 'This pull request does not contain a valid label. '
