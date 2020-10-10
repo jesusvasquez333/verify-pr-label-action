@@ -83,6 +83,12 @@ print(f'Pull request number: {pr_number}')
 # Create a pull request object
 pr = repo.get_pull(pr_number)
 
+# Check if the PR comes from a fork. If so, the trigger must be 'pull_request_target'.
+# Otherwise raise an exception here.
+if pr.head.repo.full_name != pr.base.repo.full_name:
+    if github_event_name != 'pull_request_target':
+        raise Exception(f'PRs from forks are only supported when trigger on "pull_request_target"')
+
 # Get the pull request labels
 pr_labels = pr.get_labels()
 
