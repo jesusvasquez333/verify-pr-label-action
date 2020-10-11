@@ -145,8 +145,9 @@ else:
     # If there were not valid labels, then create a pull request review, requesting changes
     print(f'Error! This pull request does not contain any of the valid labels: {valid_labels}')
 
-    # If the last review done requested changes, then don't request changes again
-    if not was_approved:
+    # If the last review done requested changes, then don't request changes again.
+    # 'was_approved' can be 'None', so here we need to explicitly compare against 'False'.
+    if was_approved == False:
         print('The last review already requested changes')
     else:
         pr.create_review(body = 'This pull request does not contain a valid label. '
