@@ -11,16 +11,21 @@ def get_env_var(env_var_name, echo_value=False):
     If the values is 'None', then a ValueError exception will
     be thrown.
 
-    Args:
-        env_var_name (string): The name of the environmental variable.
-        echo_value (bool): Print the resulting value
+    Args
+    ----
+        env_var_name : str
+            The name of the environmental variable.
+        echo_value : bool
+            Print the resulting value.
 
-    Returns:
-        string: the value from the environmental variable.
+    Returns
+    -------
+        value : str
+            The value from the environmental variable.
     """
     value=os.environ.get(env_var_name)
 
-    if value == None:
+    if value is None:
         raise ValueError(f'The environmental variable {env_var_name} is empty!')
 
     if echo_value:
@@ -79,7 +84,7 @@ pr = repo.get_pull(pr_number)
 # Otherwise raise an exception here.
 if pr.head.repo.full_name != pr.base.repo.full_name:
     if github_event_name != 'pull_request_target':
-        raise Exception(f'PRs from forks are only supported when trigger on "pull_request_target"')
+        raise Exception('PRs from forks are only supported when trigger on "pull_request_target"')
 
 # Get the pull request labels
 pr_labels = pr.get_labels()
@@ -127,13 +132,13 @@ for review in pr_reviews.reversed:
 # Note 2: We check for the status of the previous review done by this module. If a previous review exists, and
 # it state and the current state are the same, a new request won't be generated.
 
-if len(pr_valid_labels):
+if pr_valid_labels:
     # If there were valid labels, create a pull request review, approving it
     print(f'Success! This pull request contains the following valid labels: {pr_valid_labels}')
 
     # If the last review done was approved, then don't approved it again
-    if was_approved == True:
-        print(f'The last review was already approved')
+    if was_approved:
+        print('The last review was already approved')
     else:
         pr.create_review(event = 'APPROVE')
 else:
@@ -141,8 +146,8 @@ else:
     print(f'Error! This pull request does not contain any of the valid labels: {valid_labels}')
 
     # If the last review done requested changes, then don't request changes again
-    if was_approved == False:
-        print(f'The last review already requested changes')
+    if not was_approved:
+        print('The last review already requested changes')
     else:
         pr.create_review(body = 'This pull request does not contain a valid label. '
                                 f'Please add one of the following labels: `{valid_labels}`',
