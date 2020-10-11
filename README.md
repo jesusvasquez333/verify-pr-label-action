@@ -44,7 +44,7 @@ If you want to allow PRs from anywhere, including forks, then you can use this e
 
 In your workflow YAML file add these steps:
 ```yaml
-uses: jesusvasquez333/verify-pr-label-action@v1.3.0
+uses: jesusvasquez333/verify-pr-label-action@v1.3.1
 with:
     github-token: '${{ secrets.GITHUB_TOKEN }}'
     valid-labels: 'bug, enhancement'
@@ -64,7 +64,7 @@ If you plan to open PR only from the same repository, you can use this example, 
 
 In your workflow YAML file add this step:
 ```yaml
-uses: jesusvasquez333/verify-pr-label-action@v1.3.0
+uses: jesusvasquez333/verify-pr-label-action@v1.3.1
 with:
     github-token: '${{ secrets.GITHUB_TOKEN }}'
     valid-labels: 'bug, enhancement'
