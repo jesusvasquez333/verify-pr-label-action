@@ -40,9 +40,11 @@ if len(sys.argv) != 4:
 # Get the GitHub token
 token=sys.argv[1]
 
+github_title = get_env_var('GITHUB_REPOSITORY')
+
 # Get the list of valid labels
 valid_labels=sys.argv[2]
-print(f'Valid labels are: {valid_labels}')
+print(f' Repo: {github_title} Valid labels are: {valid_labels}')
 
 # Get the PR number
 pr_number_str=sys.argv[3]
