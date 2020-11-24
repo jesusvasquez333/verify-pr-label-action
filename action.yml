@@ -14,6 +14,9 @@ inputs:
   pull-request-number:
     description: 'The Pull Request number'
     required: false
+  regex:
+    description: 'Regex to check labels'
+    required: true
 runs:
   using: 'docker'
   image: 'Dockerfile'
@@ -21,3 +24,4 @@ runs:
     - ${{ inputs.github-token }}
     - ${{ inputs.valid-labels }}
     - ${{ inputs.pull-request-number }}
+    - ${{ inputs.regex }}
