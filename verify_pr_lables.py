@@ -104,10 +104,14 @@ regexList = regex.split(',')
 for label in pr_labels:
     validLabel= re.search(regexList[0], label.name)
 
+    print(f'Antes de entrar a if {validLabel.string}')
     if validLabel is None:
-        if len(regex) == 2:
+        print(f'entra a if {validLabel.string}')
+        if len(regexList) == 2:
+            print(f'tiene el largo correcto{validLabel.string}')
             validLabel = re.search(regexList[1], label.name)
             if validLabel is not None:
+                print('carga tLabels')
                 tLabels.append(validLabel.string)
     else:
         mLabels.append(validLabel.string)
