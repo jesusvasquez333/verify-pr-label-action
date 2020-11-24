@@ -100,9 +100,8 @@ tLabels = []
 # list of valid labels
 for label in pr_labels:
     #validLabel= re.search('M\..*', label)
-    print(f'LA ETIQUETA ES: {label.string}')
-    # print(f'LA ETIQUETA ES: {label.name()}')
-    # print(f'LA ETIQUETA ES: {label.string}')
+    print(f'una ayuda: {pr.head.repo}')
+    print(f'LA ETIQUETA ES: {label.name}')
 
     #if validLabel is None:
     #     validLabel = re.search('T\..*', label)
