@@ -104,7 +104,7 @@ regexList = regex.split(',')
 for label in pr_labels:
     validLabel= re.search(regexList[0], label.name)
 
-    print(f'Antes de entrar a if {validLabel.string}')
+    print(f'Antes de entrar a if')
     if validLabel is None:
         print(f'entra a if')
         if len(regexList) == 2:
