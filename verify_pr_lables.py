@@ -100,6 +100,7 @@ tLabels = []
 # list of valid labels
 regex = sys.argv[4]
 
+print(f'Los regex= {regex[0]}, {regex[1]}, len({regex})')
 for label in pr_labels:
     validLabel= re.search(regex[0], label.name)
 
