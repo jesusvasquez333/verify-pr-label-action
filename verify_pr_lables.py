@@ -99,8 +99,8 @@ tLabels = []
 # Check which of the label in the pull request, are in the
 # list of valid labels
 regex = sys.argv[4]
-regex = regex.split(',')
-print(regex)
+regexCut = regex.split(',')
+print(regexCut[0], regexCut[1])
 
 for label in pr_labels:
     validLabel= re.search(regex[0], label.name)
