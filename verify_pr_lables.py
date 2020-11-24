@@ -108,7 +108,7 @@ for label in pr_labels:
     if validLabel is None:
         print(f'entra a if {validLabel.string}')
         if len(regexList) == 2:
-            print(f'tiene el largo correcto{validLabel.string}')
+            print(f'tiene el largo correcto')
             validLabel = re.search(regexList[1], label.name)
             if validLabel is not None:
                 print('carga tLabels')
