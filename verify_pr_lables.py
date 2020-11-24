@@ -40,11 +40,9 @@ if len(sys.argv) != 4:
 # Get the GitHub token
 token=sys.argv[1]
 
-github_title = get_env_var('GITHUB_REPOSITORY')
-
 # Get the list of valid labels
 valid_labels=sys.argv[2]
-print(f' Repo: {github_title} Valid labels are: {valid_labels}')
+print(f'Valid labels are: {valid_labels}')
 
 # Get the PR number
 pr_number_str=sys.argv[3]
@@ -94,14 +92,23 @@ pr_labels = pr.get_labels()
 # Get the list of reviews
 pr_reviews = pr.get_reviews()
 
-# This is a list of valid label found in the pull request
-pr_valid_labels = []
+# List of required labels
+mLabels = []
+tLabels = []
+
+pr_title = pr.get_title()
 
 # Check which of the label in the pull request, are in the
 # list of valid labels
 for label in pr_labels:
-    if label.name in valid_labels:
-        pr_valid_labels.append(label.name)
+    validLabel= re.search("M\..*", label)
+
+    if validLabel is None:
+		validLabel = re.search("T\..*", label)
+		if validLabel is not None:
+			tLabels.append(validLabel.string)
+	else:
+		mLabels.append(validLabel.string)
 
 # Look for the last review done by this module. The variable
 # 'was_approved' will be set to True/False if the last review
@@ -134,9 +141,9 @@ for review in pr_reviews.reversed:
 # Note 2: We check for the status of the previous review done by this module. If a previous review exists, and
 # it state and the current state are the same, a new request won't be generated.
 
-if pr_valid_labels:
+if mLabels and tLabels:
     # If there were valid labels, create a pull request review, approving it
-    print(f'Success! This pull request contains the following valid labels: {pr_valid_labels}')
+    print(f'Success! This pull request contains the following valid labels: {mLabels}, {tLabels} and the title is {pr_title}')
 
     # If the last review done was approved, then don't approved it again
     if was_approved:
