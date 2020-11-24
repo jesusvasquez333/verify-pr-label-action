@@ -99,20 +99,17 @@ tLabels = []
 # Check which of the label in the pull request, are in the
 # list of valid labels
 regex = sys.argv[4]
+regex = regex.replace(" ", "")
 regexList = regex.split(',')
 
 for label in pr_labels:
-    validLabel= re.search(regexList[0], label.name)
+    validLabel = re.search(regexList[0], label.name)
 
-    print(f'Antes de entrar a if')
     if validLabel is None:
-        print(f'entra a if')
         if len(regexList) == 2:
-            print(f'tiene el largo correcto')
             validLabel = re.search(regexList[1], label.name)
-            print(f'No entra por que {regexList[1]}, {label.name}, {validLabel}')
+
             if validLabel is not None:
-                print('carga tLabels')
                 tLabels.append(validLabel.string)
     else:
         print('carga mLabel')
