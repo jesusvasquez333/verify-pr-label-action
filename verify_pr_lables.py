@@ -96,8 +96,6 @@ pr_reviews = pr.get_reviews()
 mLabels = []
 tLabels = []
 
-pr_title = pr.get_title()
-
 # Check which of the label in the pull request, are in the
 # list of valid labels
 for label in pr_labels:
@@ -143,7 +141,7 @@ for review in pr_reviews.reversed:
 
 if mLabels and tLabels:
     # If there were valid labels, create a pull request review, approving it
-    print(f'Success! This pull request contains the following valid labels: {mLabels}, {tLabels} and the title is {pr_title}')
+    print(f'Success! This pull request contains the following valid labels: {mLabels}, {tLabels}')
 
     # If the last review done was approved, then don't approved it again
     if was_approved:
