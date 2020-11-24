@@ -101,14 +101,13 @@ tLabels = []
 regex = sys.argv[4]
 
 for label in pr_labels:
-    validLabel= re.search('M\..*', label.name)
-    print(f'regex: {regex}')
-    # print(f'LA ETIQUETA ES: {label.name}')
+    validLabel= re.search(regex[0], label.name)
 
     if validLabel is None:
-        validLabel = re.search('T\..*', label.name)
-        if validLabel is not None:
-            tLabels.append(validLabel.string)
+        if len(regex) == 2:
+            validLabel = re.search(regex[1], label.name)
+            if validLabel is not None:
+                tLabels.append(validLabel.string)
     else:
         mLabels.append(validLabel.string)
 
