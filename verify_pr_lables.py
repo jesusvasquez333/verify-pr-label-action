@@ -99,15 +99,14 @@ tLabels = []
 # Check which of the label in the pull request, are in the
 # list of valid labels
 regex = sys.argv[4]
-regexCut = regex.split(',')
-print(regexCut[0], regexCut[1])
+regexList = regex.split(',')
 
 for label in pr_labels:
-    validLabel= re.search(regex[0], label.name)
+    validLabel= re.search(regexList[0], label.name)
 
     if validLabel is None:
         if len(regex) == 2:
-            validLabel = re.search(regex[1], label.name)
+            validLabel = re.search(regexList[1], label.name)
             if validLabel is not None:
                 tLabels.append(validLabel.string)
     else:
@@ -154,12 +153,6 @@ if mLabels and tLabels:
     else:
         pr.create_review(event = 'APPROVE')
 else:
-
-    if not mLabels:
-        print(f'Error! This pull request does not contain any module label')
-
-    else:
-        print(f'Error! This pull request does not contain any task label')
 
     # If the last review done requested changes, then don't request changes again.
     # 'was_approved' can be 'None', so here we need to explicitly compare against 'False'.
