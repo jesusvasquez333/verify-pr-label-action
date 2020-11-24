@@ -99,14 +99,15 @@ tLabels = []
 # Check which of the label in the pull request, are in the
 # list of valid labels
 for label in pr_labels:
-    validLabel= re.search('\M\..*', label)
+    print(f'LA ETIQUETA ES: {label}')
+    # validLabel= re.search('M\..*', label)
 
-    if validLabel is None:
-        validLabel = re.search('\T\..*', label)
-        if validLabel is not None:
-            tLabels.append(validLabel.string)
-    else:
-        mLabels.append(validLabel.string)
+    # if validLabel is None:
+    #     validLabel = re.search('T\..*', label)
+    #     if validLabel is not None:
+    #         tLabels.append(validLabel.string)
+    # else:
+    #     mLabels.append(validLabel.string)
 
 # Look for the last review done by this module. The variable
 # 'was_approved' will be set to True/False if the last review
