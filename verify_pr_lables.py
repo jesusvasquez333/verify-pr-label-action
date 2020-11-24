@@ -99,10 +99,10 @@ tLabels = []
 # Check which of the label in the pull request, are in the
 # list of valid labels
 for label in pr_labels:
-    print(f'LA ETIQUETA ES: {label}')
-    # validLabel= re.search('M\..*', label)
+    validLabel= re.search('M\..*', label)
+    print(f'LA ETIQUETA ES: {label}, {validLabel.string} ')
 
-    # if validLabel is None:
+    #if validLabel is None:
     #     validLabel = re.search('T\..*', label)
     #     if validLabel is not None:
     #         tLabels.append(validLabel.string)
