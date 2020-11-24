@@ -106,7 +106,7 @@ for label in pr_labels:
 
     print(f'Antes de entrar a if {validLabel.string}')
     if validLabel is None:
-        print(f'entra a if {validLabel.string}')
+        print(f'entra a if')
         if len(regexList) == 2:
             print(f'tiene el largo correcto')
             validLabel = re.search(regexList[1], label.name)
@@ -114,6 +114,7 @@ for label in pr_labels:
                 print('carga tLabels')
                 tLabels.append(validLabel.string)
     else:
+        print('carga mLabel')
         mLabels.append(validLabel.string)
 
 # Look for the last review done by this module. The variable
