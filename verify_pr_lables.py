@@ -93,8 +93,8 @@ pr_labels = pr.get_labels()
 pr_reviews = pr.get_reviews()
 
 # List of required labels
-mLabels = []
-tLabels = []
+firstRegexList = []
+secondRegexList = []
 
 # Check which of the label in the pull request, are in the
 # list of valid labels
@@ -110,10 +110,9 @@ for label in pr_labels:
             validLabel = re.search(regexList[1], label.name)
 
             if validLabel is not None:
-                tLabels.append(validLabel.string)
+                secondRegexList.append(validLabel.string)
     else:
-        print('carga mLabel')
-        mLabels.append(validLabel.string)
+        firstRegexList.append(validLabel.string)
 
 # Look for the last review done by this module. The variable
 # 'was_approved' will be set to True/False if the last review
@@ -146,9 +145,9 @@ for review in pr_reviews.reversed:
 # Note 2: We check for the status of the previous review done by this module. If a previous review exists, and
 # it state and the current state are the same, a new request won't be generated.
 
-if mLabels and tLabels:
+if firstRegexList and secondRegexList:
     # If there were valid labels, create a pull request review, approving it
-    print(f'Success! This pull request contains the following valid labels: {mLabels}, {tLabels}')
+    print(f'Success! This pull request contains the following valid labels: {firstRegexList}, {secondRegexList}')
 
     # If the last review done was approved, then don't approved it again
     if was_approved:
@@ -156,12 +155,11 @@ if mLabels and tLabels:
     else:
         pr.create_review(event = 'APPROVE')
 else:
-
     # If the last review done requested changes, then don't request changes again.
     # 'was_approved' can be 'None', so here we need to explicitly compare against 'False'.
     if was_approved == False:
         print('The last review already requested changes')
     else:
         pr.create_review(body = 'This pull request does not contain a valid label. '
-                                f'Please add one of the following labels: `{valid_labels}`',
+                                f'Please add {len(regexList)} of the following labels: `{valid_labels}`',
                          event = 'REQUEST_CHANGES')
