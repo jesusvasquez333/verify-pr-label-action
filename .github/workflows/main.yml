@@ -14,5 +14,5 @@ jobs:
         id: verify-pr-label
         with:
           github-token: "${{ secrets.GITHUB_TOKEN }}"
-          valid-labels: 'bug, enhancement'
           pull-request-number: '${{ github.event.pull_request.number }}'
+          regex: 'M\..*, T\..*'
