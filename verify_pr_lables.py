@@ -93,8 +93,8 @@ pr_reviews = pr.get_reviews()
 regex = sys.argv[3]
 print(regex)
 
-rege = regex.replace(" ", "")
-print(regexsWithOutSpaces)
+regex = regex.replace(" ", "")
+print(regex)
 
 regexList = regex.split(',')
 print(regexList)
