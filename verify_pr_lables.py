@@ -91,8 +91,11 @@ pr_reviews = pr.get_reviews()
 # Check which of the label in the pull request, are in the
 # list of regex
 regexs = sys.argv[3]
+print(regexs)
 regexs = regexs.replace(" ", "")
+print(regexs)
 regexList = regexs.split(',')
+print(regexList)
 
 missingRegex = []
 
