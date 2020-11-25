@@ -34,18 +34,14 @@ def get_env_var(env_var_name, echo_value=False):
     return value
 
 # Check if the number of input arguments is correct
-if len(sys.argv) != 5:
+if len(sys.argv) != 4:
     raise ValueError('Invalid number of arguments!')
 
 # Get the GitHub token
 token=sys.argv[1]
 
-# Get the list of valid labels
-valid_labels=sys.argv[2]
-print(f'Valid labels are: {valid_labels}')
-
 # Get the PR number
-pr_number_str=sys.argv[3]
+pr_number_str=sys.argv[2]
 
 # Get needed values from the environmental variables
 repo_name=get_env_var('GITHUB_REPOSITORY')
@@ -92,27 +88,26 @@ pr_labels = pr.get_labels()
 # Get the list of reviews
 pr_reviews = pr.get_reviews()
 
-# List of required labels
-firstRegexList = []
-secondRegexList = []
-
 # Check which of the label in the pull request, are in the
-# list of valid labels
-regex = sys.argv[4]
-regex = regex.replace(" ", "")
-regexList = regex.split(',')
+# list of regex
+regexs = sys.argv[3]
+regexs = regexs.replace(" ", "")
+regexList = regexs.split(',')
 
-for label in pr_labels:
-    validLabel = re.search(regexList[0], label.name)
+missingRegex = []
+
+validatedLabels = []
+
+for regex in regexList:
+    for label in pr_labels:
+        validLabel = re.search(regex, label.name)
+
+        if validLabel is not None:
+            validatedLabels.append(label.name)
+            break
 
     if validLabel is None:
-        if len(regexList) == 2:
-            validLabel = re.search(regexList[1], label.name)
-
-            if validLabel is not None:
-                secondRegexList.append(validLabel.string)
-    else:
-        firstRegexList.append(validLabel.string)
+        missingRegex.append(regex)
 
 # Look for the last review done by this module. The variable
 # 'was_approved' will be set to True/False if the last review
@@ -145,9 +140,10 @@ for review in pr_reviews.reversed:
 # Note 2: We check for the status of the previous review done by this module. If a previous review exists, and
 # it state and the current state are the same, a new request won't be generated.
 
-if firstRegexList and secondRegexList:
+print(f"todo bien, {validatedLabels}, {regexList}")
+if len(validatedLabels) == len(regexList):
     # If there were valid labels, create a pull request review, approving it
-    print(f'Success! This pull request contains the following valid labels: {firstRegexList}, {secondRegexList}')
+    print(f'Success! This pull request contains the following valid labels: {validatedLabels}')
 
     # If the last review done was approved, then don't approved it again
     if was_approved:
@@ -160,6 +156,6 @@ else:
     if was_approved == False:
         print('The last review already requested changes')
     else:
-        pr.create_review(body = 'This pull request does not contain a valid label. '
-                                f'Please add {len(regexList)} of the following labels: `{valid_labels}`',
-                         event = 'REQUEST_CHANGES')
+        pr.create_review(body = 'This pull request does not contain all required labels. '
+                                f'the following regular expressions were not found: `{regexList}`',
+                        event = 'REQUEST_CHANGES')
