@@ -39,17 +39,22 @@ if len(sys.argv) != 4:
 
 # Get the GitHub token
 token=sys.argv[1]
+print(f'token: {token}')
 
 # Get the PR number
 pr_number_str=sys.argv[2]
+print(f'pr_number: {pr_number_str}')
 
 # Get needed values from the environmental variables
 repo_name=get_env_var('GITHUB_REPOSITORY')
+print(f'repo Name: {repo_name}')
+
 github_ref=get_env_var('GITHUB_REF')
 github_event_name=get_env_var('GITHUB_EVENT_NAME')
 
 # Create a repository object, using the GitHub token
 repo = Github(token).get_repo(repo_name)
+print(f'Repo object: {repo}')
 
 # When this actions runs on a "pull_reques_target" event, the pull request number is not
 # available in the environmental variables; in that case it must be defined as an input
@@ -75,6 +80,7 @@ print(f'Pull request number: {pr_number}')
 
 # Create a pull request object
 pr = repo.get_pull(pr_number)
+print(f'pr object: {pr}')
 
 # Check if the PR comes from a fork. If so, the trigger must be 'pull_request_target'.
 # Otherwise raise an exception here.
@@ -84,7 +90,9 @@ if pr.head.repo.full_name != pr.base.repo.full_name:
 
 # Get the pull request labels
 pr_labels = pr.get_labels()
-print(pr_labels)
+print(f'pr_labels: {pr_labels}')
+
+
 # Get the list of reviews
 pr_reviews = pr.get_reviews()
 
