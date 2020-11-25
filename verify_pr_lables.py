@@ -92,9 +92,9 @@ pr_reviews = pr.get_reviews()
 # list of regex
 regexs = sys.argv[3]
 print(regexs)
-regexs = regexs.replace(" ", "")
-print(regexs)
-regexList = regexs.split(',')
+regexsWithOutSpaces = regexs.replace(" ", "")
+print(regexsWithOutSpaces)
+regexList = regexsWithOutSpaces.split(",")
 print(regexList)
 
 missingRegex = []
