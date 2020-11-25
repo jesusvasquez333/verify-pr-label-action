@@ -97,7 +97,7 @@ regex = regex.replace(" ", "")
 print(regex)
 
 regexList = regex.split(',')
-print(regexList)
+print(f'{regexList}, {regex}, {regex.split(",")}')
 
 missingRegex = []
 
