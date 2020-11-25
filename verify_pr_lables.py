@@ -84,7 +84,7 @@ if pr.head.repo.full_name != pr.base.repo.full_name:
 
 # Get the pull request labels
 pr_labels = pr.get_labels()
-
+print(pr_labels)
 # Get the list of reviews
 pr_reviews = pr.get_reviews()
 
