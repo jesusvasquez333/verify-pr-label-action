@@ -91,18 +91,21 @@ pr_reviews = pr.get_reviews()
 
 # Get the list of regex
 regexInput = sys.argv[3]
-
 regexInput = regexInput.replace(" ", "")
 
 regexList = re.split(',', regexInput)
 
-missingRegex = []
-
+#List of labels that meet one of the required regex
 validatedLabels = []
+
+#List of regex left unfulfilled
+missingRegex = []
 
 # Verify that there is at least one valid label for each regex
 for regex in regexList:
     validLabel = None
+
+    # Check if there is a label that complies with the regex
     for label in pr_labels:
         validLabel = re.search(regex, label.name)
 
@@ -144,6 +147,7 @@ for review in pr_reviews.reversed:
 # Note 2: We check for the status of the previous review done by this module. If a previous review exists, and
 # it state and the current state are the same, a new request won't be generated.
 
+# If there is the same amount of regex as valid labels, print a successful message and approve the PR
 if len(validatedLabels) == len(regexList):
     # If there were valid labels, create a pull request review, approving it
     print(f'Success! This pull request contains the following valid labels: {validatedLabels}')
@@ -154,6 +158,7 @@ if len(validatedLabels) == len(regexList):
     else:
         pr.create_review(event = 'APPROVE')
 else:
+    # Generates a list with the remaining regex to complete
     errorMessage = ""
 
     i = 0
@@ -164,5 +169,5 @@ else:
             errorMessage += ", "
 
     pr.create_review(body = 'This pull request does not contain all required labels. '
-                            f'the following regular expressions were not found: `{errorMessage}`',
+                            f'the selected labels do not satisfy the following regex: `{errorMessage}`',
                     event = 'REQUEST_CHANGES')
