@@ -88,28 +88,18 @@ pr_labels = pr.get_labels()
 # Get the list of reviews
 pr_reviews = pr.get_reviews()
 
-# Check which of the label in the pull request, are in the
-# list of regex
+# Get the list of regex
 regexInput = sys.argv[3]
-print(regexInput)
 
 regexInput = regexInput.replace(" ", "")
-print(regexInput)
 
 regexList = re.split(',', regexInput)
-
-# for regex in regexList:
-#     if re.search('\\\\', regex):
-#         x = regex.split("\\", 1)
-#         b = "\\"
-#         regex = b.join(x)
-
-print(f'{regexList}, {regexInput}, {regexInput.split(",")}')
 
 missingRegex = []
 
 validatedLabels = []
 
+# Verify that there is at least one valid label for each regex
 for regex in regexList:
     for label in pr_labels:
         validLabel = re.search(regex, label.name)
@@ -152,7 +142,6 @@ for review in pr_reviews.reversed:
 # Note 2: We check for the status of the previous review done by this module. If a previous review exists, and
 # it state and the current state are the same, a new request won't be generated.
 
-print(f"todo bien, {validatedLabels}, {regexList}")
 if len(validatedLabels) == len(regexList):
     # If there were valid labels, create a pull request review, approving it
     print(f'Success! This pull request contains the following valid labels: {validatedLabels}')
@@ -169,5 +158,5 @@ else:
         print('The last review already requested changes')
     else:
         pr.create_review(body = 'This pull request does not contain all required labels. '
-                                f'the following regular expressions were not found: `{regexList}`',
+                                f'the following regular expressions were not found: `{missingRegex}`',
                         event = 'REQUEST_CHANGES')
