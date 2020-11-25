@@ -101,18 +101,17 @@ missingRegex = []
 validatedLabels = []
 
 # Verify that there is at least one valid label for each regex
-    for regex in regexList:
-        validLabel = None
+for regex in regexList:
+    validLabel = None
+    for label in pr_labels:
+        validLabel = re.search(regex, label.name)
 
-        for label in pr_labels:
-            validLabel = re.search(regex, label.name)
+        if validLabel is not None:
+            validatedLabels.append(label.name)
+            break
 
-            if validLabel is not None:
-                validatedLabels.append(label.name)
-                break
-
-        if validLabel is None:
-            missingRegex.append(regex)
+    if validLabel is None:
+        missingRegex.append(regex)
 
 # Look for the last review done by this module. The variable
 # 'was_approved' will be set to True/False if the last review
