@@ -162,7 +162,7 @@ else:
         i = 0
         while i < len(missingRegex):
             errorMessage += missingRegex[i]
-            i++
+            i += 1
             if i < len(missingRegex):
                 errorMessage += ", "
 
