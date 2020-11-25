@@ -154,20 +154,15 @@ if len(validatedLabels) == len(regexList):
     else:
         pr.create_review(event = 'APPROVE')
 else:
-    # If the last review done requested changes, then don't request changes again.
-    # 'was_approved' can be 'None', so here we need to explicitly compare against 'False'.
-    if was_approved == False:
-        print('The last review already requested changes')
-    else:
-        errorMessage = ""
+    errorMessage = ""
 
-        i = 0
-        while i < len(missingRegex):
-            errorMessage += missingRegex[i]
-            i += 1
-            if i < len(missingRegex):
-                errorMessage += ", "
+    i = 0
+    while i < len(missingRegex):
+        errorMessage += missingRegex[i]
+        i += 1
+        if i < len(missingRegex):
+            errorMessage += ", "
 
-        pr.create_review(body = 'This pull request does not contain all required labels. '
-                                f'the following regular expressions were not found: `{errorMessage}`',
-                        event = 'REQUEST_CHANGES')
+    pr.create_review(body = 'This pull request does not contain all required labels. '
+                            f'the following regular expressions were not found: `{errorMessage}`',
+                    event = 'REQUEST_CHANGES')
