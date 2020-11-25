@@ -157,6 +157,15 @@ else:
     if was_approved == False:
         print('The last review already requested changes')
     else:
+        errorMessage = ""
+
+        i = 0
+        while i < len(missingRegex):
+            errorMessage += missingRegex[i]
+            i++
+            if i < len(missingRegex):
+                errorMessage += ", "
+
         pr.create_review(body = 'This pull request does not contain all required labels. '
-                                f'the following regular expressions were not found: `{missingRegex}`',
+                                f'the following regular expressions were not found: `{errorMessage}`',
                         event = 'REQUEST_CHANGES')
