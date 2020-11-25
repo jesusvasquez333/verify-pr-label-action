@@ -98,11 +98,11 @@ print(regexInput)
 
 regexList = re.split(',', regexInput)
 
-for regex in regexList:
-    if re.search(‘\\\\’, regex):
-        x = regex.split(“\\“, 1)
-        b = “\\”
-        regex = b.join(x)
+# for regex in regexList:
+#     if re.search('\\\\', regex):
+#         x = regex.split("\\", 1)
+#         b = "\\"
+#         regex = b.join(x)
 
 print(f'{regexList}, {regexInput}, {regexInput.split(",")}')
 
