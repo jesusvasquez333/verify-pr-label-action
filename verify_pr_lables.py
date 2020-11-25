@@ -90,11 +90,13 @@ pr_reviews = pr.get_reviews()
 
 # Check which of the label in the pull request, are in the
 # list of regex
-regexs = sys.argv[3]
-print(regexs)
-regexsWithOutSpaces = regexs.replace(" ", "")
+regex = sys.argv[3]
+print(regex)
+
+rege = regex.replace(" ", "")
 print(regexsWithOutSpaces)
-regexList = regexsWithOutSpaces.split(",")
+
+regexList = regex.split(',')
 print(regexList)
 
 missingRegex = []
