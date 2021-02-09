@@ -196,9 +196,10 @@ for review in pr_reviews.reversed:
 # First, we check if there are invalid labels, and generate a review if needed.
 if pr_invalid_labels:
     print('Error! This pull request contains the following invalid labels: '
-          f'{pr_invalid_labels}')
+          f'{pr_invalid_labels}', file=sys.stderr)
 
     if pr_reviews_disabled:
+        print('Exiting with an error code')
         exit(1)
 
     # If there has been already a request for changes due to the presence of
@@ -217,9 +218,10 @@ else:
 # This is done independently of the presence of invalid labels above.
 if not pr_valid_labels:
     print('Error! This pull request does not contain any of the valid labels: '
-          f'{valid_labels}')
+          f'{valid_labels}', file=sys.stderr)
 
     if pr_reviews_disabled:
+        print('Exiting with an error code')
         exit(1)
 
     # If there has been already a request for changes due to missing a valid
@@ -241,6 +243,7 @@ if not pr_invalid_labels and pr_valid_labels:
     print('All labels are OK in this pull request')
 
     if pr_reviews_disabled:
+        print('Exiting without an error code')
         exit(0)
 
     # If the latest review done was approved, then don't approved it again.
