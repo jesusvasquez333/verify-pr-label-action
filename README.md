@@ -42,6 +42,10 @@ Depending on the trigger condition used, this input is:
 *   **Required** when the action is triggered using `pull_request_target`. It is available in the github context as: `${{ github.event.pull_request.number }}`. Or,
 *   **Optional** when the action is triggered using `pull_request`. In this case this number is is automatically extracted from the environmental variables.
 
+### `disable-reviews`
+
+**Optional** Set to `true` to have the action skip the approval posting step and return a failure exit status code instead. 
+
 ## Example usage
 
 ### If you want to allow PRs from forks

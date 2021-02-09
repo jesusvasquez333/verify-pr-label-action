@@ -3,6 +3,7 @@
 import os
 import sys
 import re
+import distutils.util
 from github import Github
 
 
@@ -39,7 +40,7 @@ def get_env_var(env_var_name, echo_value=False):
 
 
 # Check if the number of input arguments is correct
-if len(sys.argv) != 5:
+if len(sys.argv) != 6:
     print('ERROR: Invalid number of arguments!', file=sys.stderr)
     sys.exit(1)
 
@@ -59,6 +60,13 @@ print(f'Invalid labels are: {invalid_labels}')
 
 # Get the PR number
 pr_number_str = sys.argv[4]
+
+# Are reviews disabled?
+try:
+    pr_reviews_disabled = bool(distutils.util.strtobool(sys.argv[5]))
+except ValueError:
+    pr_reviews_disabled = False
+print(f"PR reviews are: {'disabled' if pr_reviews_disabled else 'enabled'}")
 
 # Get needed values from the environmental variables
 repo_name = get_env_var('GITHUB_REPOSITORY')
@@ -190,6 +198,9 @@ if pr_invalid_labels:
     print('Error! This pull request contains the following invalid labels: '
           f'{pr_invalid_labels}')
 
+    if pr_reviews_disabled:
+        exit(1)
+
     # If there has been already a request for changes due to the presence of
     # invalid labels, then we don't request changes again.
     if review_invalid_label:
@@ -208,6 +219,9 @@ if not pr_valid_labels:
     print('Error! This pull request does not contain any of the valid labels: '
           f'{valid_labels}')
 
+    if pr_reviews_disabled:
+        exit(1)
+
     # If there has been already a request for changes due to missing a valid
     # label, then don't request changes again.
     if review_missing_label:
@@ -225,6 +239,9 @@ else:
 # This condition is complimentary to the other two conditions above.
 if not pr_invalid_labels and pr_valid_labels:
     print('All labels are OK in this pull request')
+
+    if pr_reviews_disabled:
+        exit(0)
 
     # If the latest review done was approved, then don't approved it again.
     if last_review_approved:
