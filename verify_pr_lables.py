@@ -176,6 +176,8 @@ if pr_invalid_labels:
         pr.create_review(body = 'This pull request contains invalid labels. '
                                 f'Please remove the following labels: `{pr_invalid_labels}`',
                          event = 'REQUEST_CHANGES')
+else:
+    print('This pull request does not contain invalid labels')
 
 # Then, we check it there are valid labels, and generate a review if needed.
 # This is done independently of the presence of invalid labels above.
@@ -191,14 +193,14 @@ if not pr_valid_labels:
         pr.create_review(body = 'This pull request does not contain a valid label. '
                                 f'Please add one of the following labels: `{valid_labels}`',
                          event = 'REQUEST_CHANGES')
+else:
+    print(f'This pull request contains the following valid labels: {pr_valid_labels}')
 
 # Finally, we check if all labels are OK, and generate a review if needed.
 # This condition is complimentary to the other two conditions above.
 if not pr_invalid_labels and pr_valid_labels:
     # If there were valid labels, create a pull request review, approving it
-    print(f'Success! This pull request contains the following valid labels: {pr_valid_labels}')
-
-    # If the latest review done was approved, then don't approved it again
+    # If the latest review done was approved, then don't approved it again.
     if last_review_approved:
         print('The last review was already approved')
     else:
