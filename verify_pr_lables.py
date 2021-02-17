@@ -161,6 +161,9 @@ for review in pr_reviews.reversed:
 # and will create a new pull request review, but in this case marked as 'APPROVE'
 # Note 2: We check for the status of the previous review done by this module. If a previous review exists, and
 # it state and the current state are the same, a new request won't be generated.
+# Note 3: We want to generate independent reviews for both cases: an invalid label is present and a valid label is missing.
+
+# First, we check if there are invalid labels, and generate a review if needed.
 if pr_invalid_labels:
     # If there were invalid labels, then create a pull request review, requesting changes
     print(f'Error! This pull request contains the following invalid labels: {pr_invalid_labels}')
@@ -173,7 +176,10 @@ if pr_invalid_labels:
         pr.create_review(body = 'This pull request contains invalid labels. '
                                 f'Please remove the following labels: `{pr_invalid_labels}`',
                          event = 'REQUEST_CHANGES')
-elif not pr_valid_labels:
+
+# Then, we check it there are valid labels, and generate a review if needed.
+# This is done independently of the presence of invalid labels above.
+if not pr_valid_labels:
     # If there were not valid labels, then create a pull request review, requesting changes
     print(f'Error! This pull request does not contain any of the valid labels: {valid_labels}')
 
@@ -185,7 +191,10 @@ elif not pr_valid_labels:
         pr.create_review(body = 'This pull request does not contain a valid label. '
                                 f'Please add one of the following labels: `{valid_labels}`',
                          event = 'REQUEST_CHANGES')
-else:
+
+# Finally, we check if all labels are OK, and generate a review if needed.
+# This condition is complimentary to the other two conditions above.
+if not pr_invalid_labels and pr_valid_labels:
     # If there were valid labels, create a pull request review, approving it
     print(f'Success! This pull request contains the following valid labels: {pr_valid_labels}')
 
