@@ -1,7 +1,7 @@
 ---
   dataSource: "prs"
   onlyMilestones: false
-  # Group the release notes in tow categories,
+  # Group the release notes in two categories,
   # based on the PR labels 'bug' and 'enhancement'
   groupBy:
     "Bug fixes:":
