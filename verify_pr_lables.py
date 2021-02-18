@@ -41,6 +41,9 @@ if len(sys.argv) != 5:
 
 # Get the GitHub token
 token=sys.argv[1]
+if not token:
+    print('A token must be provided!')
+    sys.exit(1)
 
 # Get the list of valid labels
 valid_labels = [label.strip() for label in sys.argv[2].split(',')]
