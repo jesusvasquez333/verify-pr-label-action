@@ -26,7 +26,7 @@ def get_env_var(env_var_name, echo_value=False):
     value=os.environ.get(env_var_name)
 
     if value is None:
-        print(f'The environmental variable {env_var_name} is empty!')
+        print(f'ERROR: The environmental variable {env_var_name} is empty!', file=sys.stderr)
         sys.exit(1)
 
     if echo_value:
@@ -36,13 +36,13 @@ def get_env_var(env_var_name, echo_value=False):
 
 # Check if the number of input arguments is correct
 if len(sys.argv) != 5:
-    print('Invalid number of arguments!')
+    print('ERROR: Invalid number of arguments!', file=sys.stderr)
     sys.exit(1)
 
 # Get the GitHub token
 token=sys.argv[1]
 if not token:
-    print('A token must be provided!')
+    print('ERROR: A token must be provided!', file=sys.stderr)
     sys.exit(1)
 
 # Get the list of valid labels
@@ -72,16 +72,17 @@ if github_event_name == 'pull_request_target':
     try:
         pr_number=int(pr_number_str)
     except ValueError:
-        print(f'A valid pull request number input must be defined when triggering on ' \
-            f'"pull_request_target". The pull request number passed was "{pr_number_str}".')
+        print(f'ERROR: A valid pull request number input must be defined when triggering on ' \
+            f'"pull_request_target". The pull request number passed was "{pr_number_str}".',
+            file=sys.stderr)
         sys.exit(1)
 else:
     # Try to extract the pull request number from the GitHub reference.
     try:
         pr_number=int(re.search('refs/pull/([0-9]+)/merge', github_ref).group(1))
     except AttributeError:
-        print(f'The pull request number could not be extracted from the GITHUB_REF = ' \
-            f'"{github_ref}"')
+        print(f'ERROR: The pull request number could not be extracted from the GITHUB_REF = ' \
+            f'"{github_ref}"', file=sys.stderr)
         sys.exit(1)
 
 print(f'Pull request number: {pr_number}')
@@ -93,7 +94,8 @@ pr = repo.get_pull(pr_number)
 # Otherwise exit on error here.
 if pr.head.repo.full_name != pr.base.repo.full_name:
     if github_event_name != 'pull_request_target':
-        print('PRs from forks are only supported when trigger on "pull_request_target"')
+        print('ERROR: PRs from forks are only supported when trigger on "pull_request_target"',
+            file=sys.stderr)
         sys.exit(1)
 
 # Get the pull request labels
