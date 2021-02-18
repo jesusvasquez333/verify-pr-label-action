@@ -173,7 +173,7 @@ if pr_invalid_labels:
         print('The last review already requested changes')
     else:
         pr.create_review(body = 'This pull request contains invalid labels. '
-                                f'Please remove the following labels: `{pr_invalid_labels}`',
+                                f'Please remove all of the following labels: `{invalid_labels}`',
                          event = 'REQUEST_CHANGES')
 else:
     print('This pull request does not contain invalid labels')
