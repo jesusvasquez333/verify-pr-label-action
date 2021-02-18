@@ -43,11 +43,11 @@ if len(sys.argv) != 5:
 token=sys.argv[1]
 
 # Get the list of valid labels
-valid_labels=sys.argv[2]
+valid_labels = [label.strip() for label in sys.argv[2].split(',')]
 print(f'Valid labels are: {valid_labels}')
 
 # Get the list of invalid labels
-invalid_labels=sys.argv[3]
+invalid_labels = [label.strip() for label in sys.argv[3].split(',')]
 print(f'Invalid labels are: {invalid_labels}')
 
 # Get the PR number
