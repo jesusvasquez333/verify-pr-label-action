@@ -5,6 +5,7 @@ import sys
 import re
 from github import Github
 
+
 def get_env_var(env_var_name, echo_value=False):
     """Try to get the value from a environmental variable.
 
@@ -23,10 +24,11 @@ def get_env_var(env_var_name, echo_value=False):
         value : str
             The value from the environmental variable.
     """
-    value=os.environ.get(env_var_name)
+    value = os.environ.get(env_var_name)
 
     if value is None:
-        print(f'ERROR: The environmental variable {env_var_name} is empty!', file=sys.stderr)
+        print(f'ERROR: The environmental variable {env_var_name} is empty!',
+              file=sys.stderr)
         sys.exit(1)
 
     if echo_value:
@@ -34,13 +36,14 @@ def get_env_var(env_var_name, echo_value=False):
 
     return value
 
+
 # Check if the number of input arguments is correct
 if len(sys.argv) != 5:
     print('ERROR: Invalid number of arguments!', file=sys.stderr)
     sys.exit(1)
 
 # Get the GitHub token
-token=sys.argv[1]
+token = sys.argv[1]
 if not token:
     print('ERROR: A token must be provided!', file=sys.stderr)
     sys.exit(1)
@@ -54,35 +57,38 @@ invalid_labels = [label.strip() for label in sys.argv[3].split(',')]
 print(f'Invalid labels are: {invalid_labels}')
 
 # Get the PR number
-pr_number_str=sys.argv[4]
+pr_number_str = sys.argv[4]
 
 # Get needed values from the environmental variables
-repo_name=get_env_var('GITHUB_REPOSITORY')
-github_ref=get_env_var('GITHUB_REF')
-github_event_name=get_env_var('GITHUB_EVENT_NAME')
+repo_name = get_env_var('GITHUB_REPOSITORY')
+github_ref = get_env_var('GITHUB_REF')
+github_event_name = get_env_var('GITHUB_EVENT_NAME')
 
 # Create a repository object, using the GitHub token
 repo = Github(token).get_repo(repo_name)
 
-# When this actions runs on a "pull_reques_target" event, the pull request number is not
-# available in the environmental variables; in that case it must be defined as an input
-# value. Otherwise, we will extract it from the 'GITHUB_REF' variable.
+# When this actions runs on a "pull_reques_target" event, the pull request
+# number is not available in the environmental variables; in that case it must
+# be defined as an input value. Otherwise, we will extract it from the
+# 'GITHUB_REF' variable.
 if github_event_name == 'pull_request_target':
     # Verify the passed pull request number
     try:
-        pr_number=int(pr_number_str)
+        pr_number = int(pr_number_str)
     except ValueError:
-        print(f'ERROR: A valid pull request number input must be defined when triggering on ' \
-            f'"pull_request_target". The pull request number passed was "{pr_number_str}".',
-            file=sys.stderr)
+        print('ERROR: A valid pull request number input must be defined when '
+              'triggering on "pull_request_target". The pull request number '
+              'passed was "{pr_number_str}".',
+              file=sys.stderr)
         sys.exit(1)
 else:
     # Try to extract the pull request number from the GitHub reference.
     try:
-        pr_number=int(re.search('refs/pull/([0-9]+)/merge', github_ref).group(1))
+        pr_number = int(re.search('refs/pull/([0-9]+)/merge',
+                        github_ref).group(1))
     except AttributeError:
-        print(f'ERROR: The pull request number could not be extracted from the GITHUB_REF = ' \
-            f'"{github_ref}"', file=sys.stderr)
+        print('ERROR: The pull request number could not be extracted from '
+              f'GITHUB_REF = "{github_ref}"', file=sys.stderr)
         sys.exit(1)
 
 print(f'Pull request number: {pr_number}')
@@ -90,12 +96,12 @@ print(f'Pull request number: {pr_number}')
 # Create a pull request object
 pr = repo.get_pull(pr_number)
 
-# Check if the PR comes from a fork. If so, the trigger must be 'pull_request_target'.
-# Otherwise exit on error here.
+# Check if the PR comes from a fork. If so, the trigger must be
+# 'pull_request_target'. Otherwise exit on error here.
 if pr.head.repo.full_name != pr.base.repo.full_name:
     if github_event_name != 'pull_request_target':
-        print('ERROR: PRs from forks are only supported when trigger on "pull_request_target"',
-            file=sys.stderr)
+        print('ERROR: PRs from forks are only supported when trigger on '
+              '"pull_request_target"', file=sys.stderr)
         sys.exit(1)
 
 # Get the pull request labels
@@ -161,46 +167,58 @@ for review in pr_reviews.reversed:
         latest_review = False
 
 # Check if there were not invalid labels and at least one valid label.
-# Note: In any case we exit without an error code and let the check to succeed. This is because GitHub
-# workflow will create different checks for different trigger conditions. So, adding a missing label won't
-# clear the initial failed check during the PR creation, for example.
-# Instead, we will create a pull request review, marked with 'REQUEST_CHANGES' when no valid label was found.
-# This will prevent merging the pull request until a valid label is added, which will trigger this check again
-# and will create a new pull request review, but in this case marked as 'APPROVE'
-# Note 2: We check for the status of the previous review done by this module. If a previous review exists, and
-# it state and the current state are the same, a new request won't be generated.
-# Note 3: We want to generate independent reviews for both cases: an invalid label is present and a valid label is missing.
+#
+# Note: In any case we exit without an error code and let the check to succeed.
+# This is because GitHub workflow will create different checks for different
+# trigger conditions. So, adding a missing label won't clear the initial failed
+# check during the PR creation, for example. Instead, we will create a pull
+# request review, marked with 'REQUEST_CHANGES' when no valid label was found.
+# This will prevent merging the pull request until a valid label is added,
+# which will trigger this check again and will create a new pull request
+# review, but in this case marked as 'APPROVE'
+#
+# Note 2: We check for the status of the previous review done by this module.
+# If a previous review exists, and it state and the current state are the same,
+# a new request won't be generated.
+#
+# Note 3: We want to generate independent reviews for both cases: an invalid
+# label is present and a valid label is missing.
 
 # First, we check if there are invalid labels, and generate a review if needed.
 if pr_invalid_labels:
-    print(f'Error! This pull request contains the following invalid labels: {pr_invalid_labels}')
+    print('Error! This pull request contains the following invalid labels: '
+          f'{pr_invalid_labels}')
 
     # If there has been already a request for changes due to the presence of
     # invalid labels, then we don't request changes again.
     if review_invalid_label:
         print('The last review already requested changes')
     else:
-        pr.create_review(body = 'This pull request contains invalid labels. '
-                                f'Please remove all of the following labels: `{invalid_labels}`',
-                         event = 'REQUEST_CHANGES')
+        pr.create_review(
+            body='This pull request contains invalid labels. Please remove '
+                 f'all of the following labels: `{invalid_labels}`',
+            event='REQUEST_CHANGES')
 else:
     print('This pull request does not contain invalid labels')
 
 # Then, we check it there are valid labels, and generate a review if needed.
 # This is done independently of the presence of invalid labels above.
 if not pr_valid_labels:
-    print(f'Error! This pull request does not contain any of the valid labels: {valid_labels}')
+    print('Error! This pull request does not contain any of the valid labels: '
+          f'{valid_labels}')
 
     # If there has been already a request for changes due to missing a valid
     # label, then don't request changes again.
     if review_missing_label:
         print('The last review already requested changes')
     else:
-        pr.create_review(body = 'This pull request does not contain a valid label. '
-                                f'Please add one of the following labels: `{valid_labels}`',
-                         event = 'REQUEST_CHANGES')
+        pr.create_review(
+            body='This pull request does not contain a valid label. Please '
+                 f'add one of the following labels: `{valid_labels}`',
+            event='REQUEST_CHANGES')
 else:
-    print(f'This pull request contains the following valid labels: {pr_valid_labels}')
+    print('This pull request contains the following valid labels: '
+          f'{pr_valid_labels}')
 
 # Finally, we check if all labels are OK, and generate a review if needed.
 # This condition is complimentary to the other two conditions above.
@@ -211,4 +229,4 @@ if not pr_invalid_labels and pr_valid_labels:
     if last_review_approved:
         print('The last review was already approved')
     else:
-        pr.create_review(event = 'APPROVE')
+        pr.create_review(event='APPROVE')
