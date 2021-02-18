@@ -34,7 +34,7 @@ Fortunately, Github recently added a new trigger event `pull_request_target` whi
 
 ### `invalid-labels`
 
-**Optional** A list of invalid labels. It must be a quoted string, with label separated by commas. For example: `'help-wanted, needs-work'`.
+**Optional** A list of invalid labels. It must be a quoted string, with label separated by commas. For example: `'help wanted, invalid'`.
 
 ### `pull-request-number`
 
@@ -52,7 +52,7 @@ uses: jesusvasquez333/verify-pr-label-action@v1.3.1
 with:
     github-token: '${{ secrets.GITHUB_TOKEN }}'
     valid-labels: 'bug, enhancement'
-    invalid-labels: 'help-wanted, needs-work'
+    invalid-labels: 'help wanted, invalid'
     pull-request-number: '${{ github.event.pull_request.number }}'
 ```
 
@@ -73,7 +73,7 @@ uses: jesusvasquez333/verify-pr-label-action@v1.3.1
 with:
     github-token: '${{ secrets.GITHUB_TOKEN }}'
     valid-labels: 'bug, enhancement'
-    invalid-labels: 'help-wanted, needs-work'
+    invalid-labels: 'help wanted, invalid'
 ```
 
 and trigger it with:
