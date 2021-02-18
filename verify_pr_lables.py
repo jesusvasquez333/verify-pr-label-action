@@ -26,7 +26,8 @@ def get_env_var(env_var_name, echo_value=False):
     value=os.environ.get(env_var_name)
 
     if value is None:
-        raise ValueError(f'The environmental variable {env_var_name} is empty!')
+        print(f'The environmental variable {env_var_name} is empty!')
+        sys.exit(1)
 
     if echo_value:
         print(f"{env_var_name} = {value}")
@@ -35,7 +36,8 @@ def get_env_var(env_var_name, echo_value=False):
 
 # Check if the number of input arguments is correct
 if len(sys.argv) != 5:
-    raise ValueError('Invalid number of arguments!')
+    print('Invalid number of arguments!')
+    sys.exit(1)
 
 # Get the GitHub token
 token=sys.argv[1]
@@ -85,10 +87,11 @@ print(f'Pull request number: {pr_number}')
 pr = repo.get_pull(pr_number)
 
 # Check if the PR comes from a fork. If so, the trigger must be 'pull_request_target'.
-# Otherwise raise an exception here.
+# Otherwise exit on error here.
 if pr.head.repo.full_name != pr.base.repo.full_name:
     if github_event_name != 'pull_request_target':
-        raise Exception('PRs from forks are only supported when trigger on "pull_request_target"')
+        print('PRs from forks are only supported when trigger on "pull_request_target"')
+        sys.exit(1)
 
 # Get the pull request labels
 pr_labels = pr.get_labels()
