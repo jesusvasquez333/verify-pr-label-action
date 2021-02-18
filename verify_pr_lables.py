@@ -14,15 +14,15 @@ def get_env_var(env_var_name, echo_value=False):
 
     Args
     ----
-        env_var_name : str
-            The name of the environmental variable.
-        echo_value : bool
-            Print the resulting value.
+    env_var_name : str
+        The name of the environmental variable.
+    echo_value : bool, optional, default False
+        Print the resulting value.
 
     Returns
     -------
-        value : str
-            The value from the environmental variable.
+    value : str
+        The value from the environmental variable.
     """
     value = os.environ.get(env_var_name)
 
