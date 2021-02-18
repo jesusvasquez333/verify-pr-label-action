@@ -38,7 +38,9 @@ Fortunately, Github recently added a new trigger event `pull_request_target` whi
 
 ### `pull-request-number`
 
-**Optional** The pull request number, available in the github context: `${{ github.event.pull_request.number }}`. This number is automatically extracted from the environmental variables when the action triggers on `pull_request`. However, when the trigger used is `pull_request_target`, then this input must be used.
+Depending on the trigger condition used, this input is:
+* **Required** when the action is triggered using `pull_request_target`. It is available in the github context as: `${{ github.event.pull_request.number }}`. Or,
+* **Optional** when the action is triggered using `pull_request`. In this case this number is is automatically extracted from the environmental variables.
 
 ## Example usage
 
