@@ -1,3 +1,8 @@
+# This workflow will be verify that all PRs have at
+# least on the label: 'bugs', 'enhancement' before
+# they can be merged.
+
+name: Verify PR labels
 on:
   pull_request_target:
    types: [opened, labeled, unlabeled, synchronize]
