@@ -18,6 +18,9 @@ inputs:
   pull-request-number:
     description: 'The Pull Request number'
     required: false
+  disable-reviews:
+    description: 'Should the action post reviews on PRs'
+    required: false
 runs:
   using: 'docker'
   image: 'Dockerfile'
@@ -26,3 +29,4 @@ runs:
     - ${{ inputs.valid-labels }}
     - ${{ inputs.invalid-labels }}
     - ${{ inputs.pull-request-number }}
+    - ${{ inputs.disable-reviews }}
