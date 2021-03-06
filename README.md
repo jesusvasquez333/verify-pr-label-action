@@ -6,15 +6,23 @@
 
 This action will verify if a pull request has at least one label from a set of valid labels, as well as no label from a set of invalid labels. The sets of valid and invalid labels are defined by the user and passed as input arguments.
 
-If the pull request does not contain a label from the set of valid labels, or contains a label from the set of invalid labels, then the action will create a pull request review using the event `REQUEST_CHANGES`; independent reviews are generated for both cases. Otherwise, the action will instead create a pull request review using the event `APPROVE`. In both of these cases the exit code will be `0`, and the GitHub check will succeed.
+To prevent the merging of an invalid pull request, this action uses either the standard pull request workflow or the status of the GitHub Action check.
 
-This action uses the pull request workflow to prevent the merging of a pull request without a valid label or with an invalid label, instead of the status of the GitHub checks. The reason for this is that GitHub workflows will run independent checks for different trigger conditions, instead of grouping them together. For example, consider that the action is triggered by `pull_request`'s types `opened` and `labeled`, then if a pull request is opened without adding a valid label at the time of creation, that event will trigger a check that should fail; however, adding later a valid label to the pull request will just trigger a **new** check which will succeed, but the first check will remain in the failed state (and the pull request merge will be blocked if the option `Require status checks to pass before merging` is enabled in the repository).
+### Using the standard pull request workflow
 
-Instead, consider the same example, the action is triggered by `pull_request`'s types `opened` and `labeled`, then if a pull request is opened without adding a valid label at the time of creation, that event will trigger a check that will succeed, but will crate a pull request review, requesting for changes. The pull request review will prevent the merging of the pull request (if the option `Require pull request reviews before merging` is enabled in the repository) in this case. Adding a valid label to the repository will then trigger a **new** action which will succeed as well, but in this case it will create a new pull request review, approving the pull request. After this, the pull request can be merged.
+By default, this action uses the standard pull request workflow. In this mode, if the pull request does not contain a label from the set of valid labels, or contains a label from the set of invalid labels, then the action will create a pull request review using the event `REQUEST_CHANGES`; independent reviews are generated for both cases. Otherwise, the action will instead create a pull request review using the event `APPROVE`. In both of these cases the exit code will be `0`, and the GitHub Action check will always succeed.
+
+The `REQUEST_CHANGES` review will prevent the merging of the pull request (if the option `Require pull request reviews before merging` is enabled in the repository) until the `APPROVE` review is generated. After that, the pull request can be merged.
 
 When this action runs, it will look for the previous review done by itself, and it will not repeat the same request again. However, if the option `Dismiss stale pull request approvals when new commits are pushed` is enabled in the repository, previous review will be automatically dismissed and therefore this check will fail, and a new request will always be generated.
 
 **Note**: if you want to use the `Require pull request reviews before merging` to require reviews approval before merging pull requests, then you need to increase the number of `Required approving reviewers` by one, as this check will do an approval when a valid label is present. So, for example, if you want at least one reviewer approval, then set this value to 2.
+
+### Using the GitHub Action check status
+
+On the other hand, the creations of reviews can be disabled by setting the input `disable-reviews` to `true`. In this mode, if the pull request does not contain a label from the set of valid labels, or contains a label from the set of invalid labels, then the action will exit with an error code (`1`), and the GitHub Action check will fail. Otherwise, the action will instead exit with the code `0`, and the GitHub Action check will succeed. In both cases, the action won't create any pull request review.
+
+The failing of the GitHub Action check will prevent the merging of the pull request (if the option `Require status checks to pass before merging` is enabled in the repository) until the check succeeds. After that, the pull request can be merged.
 
 ## Note when working with forks
 
@@ -44,7 +52,7 @@ Depending on the trigger condition used, this input is:
 
 ### `disable-reviews`
 
-**Optional** Set to `true` to have the action skip the approval posting step and return a failure exit status code instead.
+**Optional** Set to `true` to disable the creation on pull request reviews, and use the exit code instead.
 
 ## Example usage
 
