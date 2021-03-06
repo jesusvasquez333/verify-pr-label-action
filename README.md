@@ -52,7 +52,7 @@ Depending on the trigger condition used, this input is:
 
 ### `disable-reviews`
 
-**Optional** Set to `true` to disable the creation on pull request reviews, and use the exit code instead.
+**Optional** Set to `true` to disable the creation on pull request reviews, and use the status of the check instead.
 
 ## Example usage
 
