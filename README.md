@@ -44,13 +44,11 @@ Depending on the trigger condition used, this input is:
 
 ### `disable-reviews`
 
-**Optional** Set to `true` to have the action skip the approval posting step and return a failure exit status code instead. 
+**Optional** Set to `true` to have the action skip the approval posting step and return a failure exit status code instead.
 
 ## Example usage
 
-### If you want to allow PRs from forks
-
-If you want to allow PRs from anywhere, including forks, then you can use this example. These instructions will work even if you are not going to work with forks.
+Normally, in your project you would want to allow PRs both from the same repository as well as forks. In that case, you must use the trigger condition `pull_request_target`, as described in this example:
 
 In your workflow YAML file add these steps:
 ```yaml
@@ -69,9 +67,7 @@ on:
    types: [opened, labeled, unlabeled, synchronize]
 ```
 
-### If you plan to only open PRs from the same repository
-
-If you plan to open PR only from the same repository, you can use this example, which requires one less input value. However, this won't work if you open a PR from a fork.
+The above example should you preferred method. Nevertheless, the trigger condition `pull_request` is also supported, and you can use it instead of `pull_request_target`. This condition, however, works only for PRs from the same repository; its only advantage is that the `pull-request-number` input is not needed in this case and can be omitted. So, if you want to use that condition instead, follow this example:
 
 In your workflow YAML file add this step:
 ```yaml
@@ -88,3 +84,5 @@ on:
   pull_request:
    types: [opened, labeled, unlabeled, synchronize]
 ```
+
+Please note that you must use only **one** trigger condition for your action, either `pull_request_target` or `pull_request`, but not both at the same time.
