@@ -60,7 +60,7 @@ Normally, in your project you would want to allow PRs both from the same reposit
 
 In your workflow YAML file add these steps:
 ```yaml
-uses: jesusvasquez333/verify-pr-label-action@v1.3.1
+uses: jesusvasquez333/verify-pr-label-action@v1.4.0
 with:
     github-token: '${{ secrets.GITHUB_TOKEN }}'
     valid-labels: 'bug, enhancement'
@@ -79,7 +79,7 @@ The above example should you preferred method. Nevertheless, the trigger conditi
 
 In your workflow YAML file add this step:
 ```yaml
-uses: jesusvasquez333/verify-pr-label-action@v1.3.1
+uses: jesusvasquez333/verify-pr-label-action@v1.4.0
 with:
     github-token: '${{ secrets.GITHUB_TOKEN }}'
     valid-labels: 'bug, enhancement'
