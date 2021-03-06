@@ -133,71 +133,78 @@ for label in pr_labels:
     if label.name in invalid_labels:
         pr_invalid_labels.append(label.name)
 
-# Look for the last reviews done by this module. We look backward
-# in the review history for all the reviews done by this module, until
-# we find the last approved review. In the process, we check is there has
-# been reviews with request for changes due to missing valid label as well as
-# due to containing invalid labels; if found, we set to 'True' the flags
-# 'review_missing_label' and 'review_invalid_label' accordingly.
+# If reviews are enabled, look for the last reviews done by this module.
+# We look backward in the review history for all the reviews done by this
+# module, until we find the last approved review. In the process, we check is
+# there has been reviews with request for changes due to missing valid label
+# as well as due to containing invalid labels; if found, we set to 'True' the
+# flags 'review_missing_label' and 'review_invalid_label' accordingly.
 # If the latest review done by this module was approved, then we set the flag
 # 'review_approved' to 'True'. The temporal flag 'latest_review' is used to
 # determine which is the latest review done by this module.
-last_review_approved = False
-review_invalid_label = False
-review_missing_label = False
-latest_review = True
-for review in pr_reviews.reversed:
-    # Reviews done by this modules uses a login name
-    # 'github-actions[bot]'
-    if review.user.login == 'github-actions[bot]':
-        if review.state == 'APPROVED':
-            # This review was approved
+if not pr_reviews_disabled:
+    last_review_approved = False
+    review_invalid_label = False
+    review_missing_label = False
+    latest_review = True
+    for review in pr_reviews.reversed:
+        # Reviews done by this modules uses a login name
+        # 'github-actions[bot]'
+        if review.user.login == 'github-actions[bot]':
+            if review.state == 'APPROVED':
+                # This review was approved
 
-            # Check is this is the latest review done by this module
-            if latest_review:
-                # Indicate that the last review was an approved review.
-                last_review_approved = True
+                # Check is this is the latest review done by this module
+                if latest_review:
+                    # Indicate that the last review was an approved review.
+                    last_review_approved = True
 
-            # Break the loop after the last approved review is found.
-            break
+                # Break the loop after the last approved review is found.
+                break
 
-        elif review.state == 'CHANGES_REQUESTED':
-            # This review requested changes. Determine the reason based on the
-            # body of the review.
-            if 'This pull request contains invalid labels.' in review.body:
-                # The changes were requested due to invalid labels
-                review_invalid_label = True
-            else:
-                # The changes were requested due to missing a valid label
-                review_missing_label = True
+            elif review.state == 'CHANGES_REQUESTED':
+                # This review requested changes. Determine the reason based on the
+                # body of the review.
+                if 'This pull request contains invalid labels.' in review.body:
+                    # The changes were requested due to invalid labels
+                    review_invalid_label = True
+                else:
+                    # The changes were requested due to missing a valid label
+                    review_missing_label = True
 
-        # Indicate that the next review is not the latest review done
-        # by this module
-        latest_review = False
+            # Indicate that the next review is not the latest review done
+            # by this module
+            latest_review = False
 
 # Check if there were not invalid labels and at least one valid label.
 #
-# Note: In any case we exit without an error code and let the check to succeed.
-# This is because GitHub workflow will create different checks for different
-# trigger conditions. So, adding a missing label won't clear the initial failed
-# check during the PR creation, for example. Instead, we will create a pull
-# request review, marked with 'REQUEST_CHANGES' when no valid label was found.
-# This will prevent merging the pull request until a valid label is added,
-# which will trigger this check again and will create a new pull request
-# review, but in this case marked as 'APPROVE'
+# Note: When reviews are enabled, we always exit without an error code and let
+# the check to succeed. Instead, we will create a pull request review, marked
+# with 'REQUEST_CHANGES' when no valid label or invalid labels are found.
+# This will prevent merging the pull request. When a valid label and not
+# invalid labels are found, we will create a new pull request review, but in
+# this case marked as 'APPROVE'. This will allow merging the pull request.
 #
-# Note 2: We check for the status of the previous review done by this module.
-# If a previous review exists, and it state and the current state are the same,
-# a new request won't be generated.
+# Note 2: When reviews are enabled, we check for the status of the previous
+# review done by this module. If a previous review exists, and it state and
+# the current state are the same, a new request won't be generated.
 #
 # Note 3: We want to generate independent reviews for both cases: an invalid
 # label is present and a valid label is missing.
+#
+# Note 4: If reviews are disabled, we do not generate reviews. Instead, we exit
+# with an error code when no valid label or invalid labels are found, making
+# the check fail. This will prevent merging the pull request. When a valid
+# label and not invalid labels are found, we exit without an error code,
+# making the check pass. This will allow merging the pull request.
 
-# First, we check if there are invalid labels, and generate a review if needed.
+# First, we check if there are invalid labels, and generate a review if needed,
+# or exit with an error code.
 if pr_invalid_labels:
     print('Error! This pull request contains the following invalid labels: '
           f'{pr_invalid_labels}', file=sys.stderr)
 
+    # If reviews are disable, exit with an error code.
     if pr_reviews_disabled:
         print('Exiting with an error code')
         exit(1)
@@ -214,12 +221,14 @@ if pr_invalid_labels:
 else:
     print('This pull request does not contain invalid labels')
 
-# Then, we check it there are valid labels, and generate a review if needed.
-# This is done independently of the presence of invalid labels above.
+# Then, we check it there are valid labels, and generate a review if needed,
+# or exit with an error code. This is done independently of the presence of
+# invalid labels above.
 if not pr_valid_labels:
     print('Error! This pull request does not contain any of the valid labels: '
           f'{valid_labels}', file=sys.stderr)
 
+    # If reviews are disable, exit with an error code.
     if pr_reviews_disabled:
         print('Exiting with an error code')
         exit(1)
@@ -237,11 +246,13 @@ else:
     print('This pull request contains the following valid labels: '
           f'{pr_valid_labels}')
 
-# Finally, we check if all labels are OK, and generate a review if needed.
-# This condition is complimentary to the other two conditions above.
+# Finally, we check if all labels are OK, and generate a review if needed,
+# or exit without an error code. This condition is complimentary to the other
+# two conditions above.
 if not pr_invalid_labels and pr_valid_labels:
     print('All labels are OK in this pull request')
 
+    # If reviews are disable, exit without an error code.
     if pr_reviews_disabled:
         print('Exiting without an error code')
         exit(0)
