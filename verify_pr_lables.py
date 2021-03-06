@@ -207,7 +207,7 @@ if pr_invalid_labels:
     # If reviews are disable, exit with an error code.
     if pr_reviews_disabled:
         print('Exiting with an error code')
-        exit(1)
+        sys.exit(1)
 
     # If there has been already a request for changes due to the presence of
     # invalid labels, then we don't request changes again.
@@ -231,7 +231,7 @@ if not pr_valid_labels:
     # If reviews are disable, exit with an error code.
     if pr_reviews_disabled:
         print('Exiting with an error code')
-        exit(1)
+        sys.exit(1)
 
     # If there has been already a request for changes due to missing a valid
     # label, then don't request changes again.
@@ -255,7 +255,7 @@ if not pr_invalid_labels and pr_valid_labels:
     # If reviews are disable, exit without an error code.
     if pr_reviews_disabled:
         print('Exiting without an error code')
-        exit(0)
+        sys.exit(0)
 
     # If the latest review done was approved, then don't approved it again.
     if last_review_approved:
