@@ -133,47 +133,48 @@ for label in pr_labels:
     if label.name in invalid_labels:
         pr_invalid_labels.append(label.name)
 
-# Look for the last reviews done by this module. We look backward
-# in the review history for all the reviews done by this module, until
-# we find the last approved review. In the process, we check is there has
-# been reviews with request for changes due to missing valid label as well as
-# due to containing invalid labels; if found, we set to 'True' the flags
-# 'review_missing_label' and 'review_invalid_label' accordingly.
+# If reviews are enabled, look for the last reviews done by this module.
+# We look backward in the review history for all the reviews done by this
+# module, until we find the last approved review. In the process, we check is
+# there has been reviews with request for changes due to missing valid label
+# as well as due to containing invalid labels; if found, we set to 'True' the
+# flags 'review_missing_label' and 'review_invalid_label' accordingly.
 # If the latest review done by this module was approved, then we set the flag
 # 'review_approved' to 'True'. The temporal flag 'latest_review' is used to
 # determine which is the latest review done by this module.
-last_review_approved = False
-review_invalid_label = False
-review_missing_label = False
-latest_review = True
-for review in pr_reviews.reversed:
-    # Reviews done by this modules uses a login name
-    # 'github-actions[bot]'
-    if review.user.login == 'github-actions[bot]':
-        if review.state == 'APPROVED':
-            # This review was approved
+if not pr_reviews_disabled:
+    last_review_approved = False
+    review_invalid_label = False
+    review_missing_label = False
+    latest_review = True
+    for review in pr_reviews.reversed:
+        # Reviews done by this modules uses a login name
+        # 'github-actions[bot]'
+        if review.user.login == 'github-actions[bot]':
+            if review.state == 'APPROVED':
+                # This review was approved
 
-            # Check is this is the latest review done by this module
-            if latest_review:
-                # Indicate that the last review was an approved review.
-                last_review_approved = True
+                # Check is this is the latest review done by this module
+                if latest_review:
+                    # Indicate that the last review was an approved review.
+                    last_review_approved = True
 
-            # Break the loop after the last approved review is found.
-            break
+                # Break the loop after the last approved review is found.
+                break
 
-        elif review.state == 'CHANGES_REQUESTED':
-            # This review requested changes. Determine the reason based on the
-            # body of the review.
-            if 'This pull request contains invalid labels.' in review.body:
-                # The changes were requested due to invalid labels
-                review_invalid_label = True
-            else:
-                # The changes were requested due to missing a valid label
-                review_missing_label = True
+            elif review.state == 'CHANGES_REQUESTED':
+                # This review requested changes. Determine the reason based on the
+                # body of the review.
+                if 'This pull request contains invalid labels.' in review.body:
+                    # The changes were requested due to invalid labels
+                    review_invalid_label = True
+                else:
+                    # The changes were requested due to missing a valid label
+                    review_missing_label = True
 
-        # Indicate that the next review is not the latest review done
-        # by this module
-        latest_review = False
+            # Indicate that the next review is not the latest review done
+            # by this module
+            latest_review = False
 
 # Check if there were not invalid labels and at least one valid label.
 #
